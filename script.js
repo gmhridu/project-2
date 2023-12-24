@@ -39,9 +39,6 @@ const apiUrl =
     }
     }
 
-  searchBtn.addEventListener("click", ()=>{
-     checkWeather(searchBox.value);
-  })
 
  
 
