@@ -1,44 +1,105 @@
 const apiKey = "7cb122e70b9998a13408629d1da6489c";
-const apiUrl =
-  "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric";
 
-  const searchBox = document.querySelector(".search input");
-  const searchBtn = document.querySelector(".search button");
-  const weatherIcon = document.querySelector(".weather-icon");
+// Function to get weather by coordinates
+async function getWeatherByCoordinates(lat, lon) {
+  try {
+    const response = await fetch(
+      `${apiUrl}&lat=${lat}&lon=${lon}&appid=${apiKey}`
+    );
+    const data = await response.json();
+    displayWeather(data);
+  } catch (error) {
+    console.error("Error fetching weather by coordinates:", error);
+  }
+}
 
-  async function checkWeather (city){
-    const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
-
-    if(response.status == 404){
-      document.querySelector(".error").style.display = "block";
-      document.querySelector(".weather").style.display = "none";
-    } else {
-      var data = await response.json();
-
-      document.querySelector(".city").innerHTML = data.name;
-      document.querySelector(".temp").innerHTML =
-        Math.round(data.main.temp) + "°c";
-      document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
-      document.querySelector(".wind").innerHTML = data.wind.speed + "km/h";
-
-      if (data.weather[0].main == "Clouds") {
-        weatherIcon.src = "images/clouds.png";
-      } else if (data.weather[0].main == "Clear") {
-        weatherIcon.src = "images/clear.png";
-      } else if (data.weather[0].main == "Rain") {
-        weatherIcon.src = "images/rain.png";
-      } else if (data.weather[0].main == "Drizzle") {
-        weatherIcon.src = "images/drizzle.png";
-      } else if (data.weather[0].main == "Mist") {
-        weatherIcon.src = "images/mist.png";
-      } else if (data.weather[0].main == "Snow") {
-        weatherIcon.src = "images/snow.png";
-      }
-      document.querySelector(".weather").style.display = "block";
-        document.querySelector(".error").style.display = "none";
+// Function to get weather by city name
+async function getWeatherByCity(city) {
+  try {
+    const response = await fetch(`${apiUrl}&q=${city}&appid=${apiKey}`);
+    if (!response.ok) {
+      throw new Error("City not found");
     }
+    const data = await response.json();
+    displayWeather(data);
+  } catch (error) {
+    console.error("Error fetching weather by city:", error);
+    displayError();
+  }
+}
+
+// Function to display weather details
+function displayWeather(data) {
+  document.querySelector(".city").innerHTML = data.name;
+  document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+  document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+  document.querySelector(".wind").innerHTML = data.wind.speed + "km/h";
+
+const weatherIcon = document.querySelector('.weather-icon');
+const weatherMain = data.weather[0].main.toLowerCase();
+const iconMap = {
+  clouds: 'images/clouds.png',
+  clear: 'images/clear.png',
+  rain: 'images/rain.png',
+  drizzle: 'images/drizzle.png',
+  mist: 'images/mist.png',
+  snow: 'images/snow.png',
+};
+const defaultIcon = 'images/clouds.png'; // Path to your default icon image
+
+weatherIcon.onerror = function () {
+  this.src = defaultIcon; // Set the default icon if an error occurs while loading the image
+};
+
+weatherIcon.src = iconMap[weatherMain] || defaultIcon; // Use default icon if weatherMain doesn't match any key
+
+}
+
+// Function to display error message
+function displayError() {
+  document.querySelector(".error").style.display = "block";
+  document.querySelector(".weather").style.display = "none";
+}
+
+// Event listener for search button
+const searchBtn = document.querySelector(".search button");
+const searchBox = document.querySelector(".search input");
+searchBtn.addEventListener("click", () => {
+  const city = searchBox.value.trim();
+  if (city) {
+    getWeatherByCity(city);
+  }
+});
+
+// Function to handle search when Enter key is pressed
+function handleSearch(event) {
+  if (event.key === 'Enter') {
+    const city = searchBox.value.trim();
+    if (city) {
+      getWeatherByCity(city);
     }
+  }
+}
+
+// Event listener for keydown on search input
+searchBox.addEventListener('keydown', handleSearch);
+
+// Get user's current location
+navigator.geolocation.getCurrentPosition(
+  (position) => {
+    const { latitude, longitude } = position.coords;
+    // document.getElementById(
+    //   "location"
+    // ).innerHTML= `Latitude: ${latitude}, Longitude: ${longitude}`;
+    getWeatherByCoordinates(latitude, longitude);
+  },
+  (error) => {
+    console.error("Error getting location:", error);
+    displayError();
+  }
+);
 
 
- 
+
 
