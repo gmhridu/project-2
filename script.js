@@ -42,10 +42,10 @@ weatherIcon.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@4x.p
 }
 
 // Function to display error message
-function displayError() {
-  document.querySelector(".error").style.display = "block";
-  document.querySelector(".weather").style.display = "none";
-}
+// function displayError() {
+//   document.querySelector(".error").style.display = "block";
+//   document.querySelector(".weather").style.display = "none";
+// }
 
 // Event listener for search button
 const searchBtn = document.querySelector(".search button");
