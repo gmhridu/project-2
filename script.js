@@ -36,23 +36,8 @@ function displayWeather(data) {
   document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
   document.querySelector(".wind").innerHTML = data.wind.speed + "km/h";
 
-const weatherIcon = document.querySelector('.weather-icon');
-const weatherMain = data.weather[0].main.toLowerCase();
-const iconMap = {
-  clouds: 'images/clouds.png',
-  clear: 'images/clear.png',
-  rain: 'images/rain.png',
-  drizzle: 'images/drizzle.png',
-  mist: 'images/mist.png',
-  snow: 'images/snow.png',
-};
-const defaultIcon = 'images/clouds.png'; // Path to your default icon image
-
-weatherIcon.onerror = function () {
-  this.src = defaultIcon; // Set the default icon if an error occurs while loading the image
-};
-
-weatherIcon.src = iconMap[weatherMain] || defaultIcon; // Use default icon if weatherMain doesn't match any key
+const weatherIcon = document.querySelector(".weather-icon");
+weatherIcon.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
 
 }
 

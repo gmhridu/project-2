@@ -96,3 +96,31 @@ body{
   margin-top: 10px;
   display: none;
   }
+
+@media (width < 600px){
+  .search input{
+    margin-right: 6px;
+    font-size: 14px;
+  }
+  .details{
+    padding: 0;
+  }
+
+  .col img {
+    width: 30px;
+
+  }
+  .humidity, .wind {
+    margin-top: -1px;
+    font-size: 18px;
+    align-items: center;
+  }
+ .weather h2{
+  font-size: 30px;
+  margin-top: 6px;
+ }
+ .weather h1{
+  font-size: 70px;
+ }
+
+}
